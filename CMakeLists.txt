@@ -17,8 +17,10 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
+        src/customtimer.cpp
         src/main.cpp
         src/mainwindow.cpp
+        include/customtimer.h
         include/mainwindow.h
 )
 
@@ -46,6 +48,7 @@ else()
 endif()
 
 target_link_libraries(pomodoro PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_include_directories(pomodoro PRIVATE include)
 
 set_target_properties(pomodoro PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
