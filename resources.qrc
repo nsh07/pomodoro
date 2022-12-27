@@ -1,9 +1,14 @@
 <RCC>
     <qresource prefix="/">
         <file>icons/media-playback-start-symbolic.svg</file>
+        <file>icons/media-playback-start-symbolic-light.svg</file>
         <file>icons/media-playback-stop-symbolic.svg</file>
+        <file>icons/media-playback-stop-symbolic-light.svg</file>
         <file>icons/preferences-system-time-symbolic.svg</file>
+        <file>icons/preferences-system-time-symbolic-light.svg</file>
         <file>icons/system-restart-symbolic.svg</file>
+        <file>icons/system-restart-symbolic-light.svg</file>
         <file>icons/list-add-symbolic.svg</file>
+        <file>icons/list-add-symbolic-light.svg</file>
     </qresource>
 </RCC>

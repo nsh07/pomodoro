@@ -16,10 +16,16 @@ MainWindow::MainWindow(QWidget *parent)
     taskFont  = QFont("sans-serif", 18);
     lineE     = new QLineEdit;
     timer     = new CustomTimer;
-    addBtn    = new QPushButton(QIcon(":/icons/list-add-symbolic.svg"), "");
-    QPushButton *startBtn = new QPushButton(QIcon(":/icons/media-playback-start-symbolic.svg"), "Start");
-    QPushButton *stopBtn  = new QPushButton(QIcon(":/icons/media-playback-stop-symbolic.svg"), "Stop");
-    QPushButton *resetBtn = new QPushButton(QIcon(":/icons/system-restart-symbolic.svg"), "Reset");
+
+    int textHSV = timeLbl->palette().color(QPalette::WindowText).value();
+    int bgHSV = timeLbl->palette().color(QPalette::Window).value();
+    QString iconSuffix = "";
+    if (textHSV > bgHSV) iconSuffix = "-light";
+
+    addBtn    = new QPushButton(QIcon(":/icons/list-add-symbolic" + iconSuffix + ".svg"), "");
+    QPushButton *startBtn = new QPushButton(QIcon(":/icons/media-playback-start-symbolic" + iconSuffix + ".svg"), "Start");
+    QPushButton *stopBtn  = new QPushButton(QIcon(":/icons/media-playback-stop-symbolic" + iconSuffix + ".svg"), "Stop");
+    QPushButton *resetBtn = new QPushButton(QIcon(":/icons/system-restart-symbolic" + iconSuffix + ".svg"), "Reset");
     QHBoxLayout *stopResetLayout = new QHBoxLayout;
 
     // Setup and add widgets
@@ -41,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     base  ->setMinimumHeight(50);
     layout->setSizeConstraint(QLayout::SetMinimumSize);
 
-    tabWid->addTab(scrAr, QIcon(":/icons/preferences-system-time-symbolic.svg"), "Tasks");
+    tabWid->addTab(scrAr, QIcon(":/icons/preferences-system-time-symbolic" + iconSuffix + ".svg"), "Tasks");
     tabWid->setMinimumSize(640, 480);
 
     // Connections
