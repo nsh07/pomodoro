@@ -24,6 +24,7 @@ class MainWindow : public QMainWindow
     public slots:
         void addTask();
         void remTask(int index=3);
+        void remTask(QLabel *lbl);
         void subTime();
         void resetTime();
     
@@ -36,6 +37,7 @@ class MainWindow : public QMainWindow
 
         QPushButton *addBtn;
         QLineEdit *lineE;
+        QString iconSuffix;
         
         int time;
         CustomTimer *timer;

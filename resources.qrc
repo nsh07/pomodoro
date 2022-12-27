@@ -10,5 +10,7 @@
         <file>icons/system-restart-symbolic-light.svg</file>
         <file>icons/list-add-symbolic.svg</file>
         <file>icons/list-add-symbolic-light.svg</file>
+        <file>icons/edit-delete-symbolic.svg</file>
+        <file>icons/edit-delete-symbolic-light.svg</file>
     </qresource>
 </RCC>
