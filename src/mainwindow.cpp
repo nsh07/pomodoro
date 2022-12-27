@@ -16,10 +16,16 @@ MainWindow::MainWindow(QWidget *parent)
     taskFont  = QFont("sans-serif", 18);
     lineE     = new QLineEdit;
     timer     = new CustomTimer;
-    addBtn    = new QPushButton(QIcon(":/icons/list-add-symbolic.svg"), "");
-    QPushButton *startBtn = new QPushButton(QIcon(":/icons/media-playback-start-symbolic.svg"), "Start");
-    QPushButton *stopBtn  = new QPushButton(QIcon(":/icons/media-playback-stop-symbolic.svg"), "Stop");
-    QPushButton *resetBtn = new QPushButton(QIcon(":/icons/system-restart-symbolic.svg"), "Reset");
+
+    int textHSV = timeLbl->palette().color(QPalette::WindowText).value();
+    int bgHSV = timeLbl->palette().color(QPalette::Window).value();
+    iconSuffix = "";
+    if (textHSV > bgHSV) iconSuffix = "-light";
+
+    addBtn    = new QPushButton(QIcon(":/icons/list-add-symbolic" + iconSuffix + ".svg"), "");
+    QPushButton *startBtn = new QPushButton(QIcon(":/icons/media-playback-start-symbolic" + iconSuffix + ".svg"), "Start");
+    QPushButton *stopBtn  = new QPushButton(QIcon(":/icons/media-playback-stop-symbolic" + iconSuffix + ".svg"), "Stop");
+    QPushButton *resetBtn = new QPushButton(QIcon(":/icons/system-restart-symbolic" + iconSuffix + ".svg"), "Reset");
     QHBoxLayout *stopResetLayout = new QHBoxLayout;
 
     // Setup and add widgets
@@ -41,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     base  ->setMinimumHeight(50);
     layout->setSizeConstraint(QLayout::SetMinimumSize);
 
-    tabWid->addTab(scrAr, QIcon(":/icons/preferences-system-time-symbolic.svg"), "Tasks");
+    tabWid->addTab(scrAr, QIcon(":/icons/preferences-system-time-symbolic" + iconSuffix + ".svg"), "Tasks");
     tabWid->setMinimumSize(640, 480);
 
     // Connections
@@ -71,14 +77,14 @@ void MainWindow::subTime()
     */
     if (time != 0) time--;
     else {
-        if (layout->count() == 4) {
+        if (layout->rowCount() == 4) {
             time = 1500;
             timer->stop();
         }
         else {
             remTask();
             time = 1500;
-            if (layout->count() == 4) timer->stop();
+            if (layout->rowCount() == 4) timer->stop();
         }
     }
     timeLbl->setText(QString::number(time / 60) + ':' + QString::number(time % 60));
@@ -94,24 +100,34 @@ void MainWindow::addTask()
 {
     /*
     Adds a task to base layout
+    Adds a button to remove the task and the task label to the base layout
+    See the QLabel* overload of remTask()
     */
     if (!(lineE->text().isEmpty())) {
         QLabel *taskLbl = new QLabel;
+        QPushButton *remBtn = new QPushButton(QIcon(":/icons/edit-delete-symbolic" + iconSuffix + ".svg"), "");
         taskLbl->setText(lineE->text());
         taskLbl->setFont(taskFont);
+        connect(remBtn, &QPushButton::clicked, this, [this, taskLbl]{ remTask(taskLbl); });
 
-        layout->insertRow(layout->count()-2, taskLbl);
+        layout->insertRow(layout->rowCount() - 1, remBtn, taskLbl);
         lineE->clear();
     }
 }
 
 void MainWindow::remTask(int index)
 {
+    layout->removeRow(index);
+}
+
+void MainWindow::remTask(QLabel *lbl)
+{
     /*
     Removes a task from the base layout
-    Index is 2 (topmost task) by default
+    Obtains index of the task to be removed by passing its task label to
+    QFormLayout::getWidgetPosition() and then removes the row at that index
     */
-    QLayoutItem *currItem = layout->takeAt(index);
-    delete currItem->widget();
-    delete currItem;
+    int i;
+    layout->getWidgetPosition(lbl, &i, nullptr);
+    layout->removeRow(i);
 }
