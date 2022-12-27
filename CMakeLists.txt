@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(pomodoro VERSION 0.1 LANGUAGES CXX)
+project(pomodoro VERSION 0.2 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -16,10 +16,14 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-set(PROJECT_SOURCES
+set(
+    PROJECT_SOURCES
+        resources.qrc
+
         src/customtimer.cpp
         src/main.cpp
         src/mainwindow.cpp
+
         include/customtimer.h
         include/mainwindow.h
 )

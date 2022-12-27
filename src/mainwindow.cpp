@@ -1,53 +1,59 @@
 #include "mainwindow.h"
 #include "customtimer.h"
 #include <QIcon>
+#include <QPalette>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     // Initialize all variables/pointers
-    base = new QWidget;
-    scrAr = new QScrollArea;
-    layout = new QVBoxLayout(base); // Base layout
-    tabWid = new QTabWidget(this);
-    timeLbl = new QLabel;
+    base      = new QWidget;
+    scrAr     = new QScrollArea;
+    layout    = new QFormLayout(base); // Base layout
+    tabWid    = new QTabWidget(this);
+    timeLbl   = new QLabel;
     timerFont = QFont("sans-serif", 100);
-    taskFont = QFont("sans-serif", 18);
-    addBtn = new QPushButton("Add task");
-    newTaskLayout = new QHBoxLayout; // Layout that holds the new task line edit and button
-    lineE = new QLineEdit;
-    timer = new CustomTimer;
-    QPushButton *playBtn = new QPushButton(QIcon("../icons/media-playback-start-symbolic.svg"), "Start");
+    taskFont  = QFont("sans-serif", 18);
+    lineE     = new QLineEdit;
+    timer     = new CustomTimer;
+    addBtn    = new QPushButton(QIcon(":/icons/list-add-symbolic.svg"), "");
+    QPushButton *startBtn = new QPushButton(QIcon(":/icons/media-playback-start-symbolic.svg"), "Start");
+    QPushButton *stopBtn  = new QPushButton(QIcon(":/icons/media-playback-stop-symbolic.svg"), "Stop");
+    QPushButton *resetBtn = new QPushButton(QIcon(":/icons/system-restart-symbolic.svg"), "Reset");
+    QHBoxLayout *stopResetLayout = new QHBoxLayout;
 
     // Setup and add widgets
-    newTaskLayout->addWidget(lineE);
-    newTaskLayout->addWidget(addBtn);
+    stopResetLayout->addWidget(stopBtn);
+    stopResetLayout->addWidget(resetBtn);
 
-    lineE->  setPlaceholderText("What to do next?");
+    lineE  ->setPlaceholderText("What to do next?");
     time = 1500;
     timeLbl->setText("25:00");
     timeLbl->setFont(timerFont);
+    timeLbl->setAlignment(Qt::AlignCenter);
 
-    base->  setLayout(layout);
-    scrAr-> setWidget(base);
-    layout->addWidget(timeLbl);
-    layout->addWidget(playBtn);
-    base->  setMinimumHeight(50);
+    base  ->setLayout(layout);
+    scrAr ->setWidget(base);
+    layout->addRow(timeLbl);
+    layout->addRow(startBtn);
+    layout->addRow(stopResetLayout);
+    layout->addRow(addBtn, lineE);
+    base  ->setMinimumHeight(50);
     layout->setSizeConstraint(QLayout::SetMinimumSize);
 
-    tabWid->addTab(scrAr, QIcon("../icons/preferences-system-time-symbolic.svg"), "Tasks");
-    tabWid->setMinimumSize(500, 400);
-
-    layout->addLayout(newTaskLayout);
+    tabWid->addTab(scrAr, QIcon(":/icons/preferences-system-time-symbolic.svg"), "Tasks");
+    tabWid->setMinimumSize(640, 480);
 
     // Connections
-    connect(addBtn, &QPushButton::clicked, this, &MainWindow::addTask);
-    connect(timer, &QTimer::timeout, this, &MainWindow::subTime);
-    connect(playBtn, &QPushButton::clicked, timer, &CustomTimer::startTmr);
+    connect(addBtn,   &QPushButton::clicked,     this,  &MainWindow::addTask  );
+    connect(lineE,    &QLineEdit::returnPressed, this,  &MainWindow::addTask  );
+    connect(timer,    &QTimer::timeout,          this,  &MainWindow::subTime  );
+    connect(startBtn, &QPushButton::clicked,     timer, &CustomTimer::startTmr);
+    connect(stopBtn,  &QPushButton::clicked,     timer, &CustomTimer::stop    );
+    connect(resetBtn, &QPushButton::clicked,     this,  &MainWindow::resetTime);
 
-    layout->setAlignment(Qt::AlignCenter);
-    scrAr-> setAlignment(Qt::AlignCenter);
-    this->  setCentralWidget(tabWid);
+    scrAr->setAlignment(Qt::AlignCenter);
+    this ->setCentralWidget(tabWid);
 }
 
 MainWindow::~MainWindow()
@@ -65,17 +71,23 @@ void MainWindow::subTime()
     */
     if (time != 0) time--;
     else {
-        if (layout->count() == 3) {
+        if (layout->count() == 4) {
             time = 1500;
             timer->stop();
         }
         else {
             remTask();
             time = 1500;
-            if (layout->count() == 3) timer->stop();
+            if (layout->count() == 4) timer->stop();
         }
     }
     timeLbl->setText(QString::number(time / 60) + ':' + QString::number(time % 60));
+}
+
+void MainWindow::resetTime()
+{
+    time = 1500;
+    timeLbl->setText("25:00");
 }
 
 void MainWindow::addTask()
@@ -88,7 +100,7 @@ void MainWindow::addTask()
         taskLbl->setText(lineE->text());
         taskLbl->setFont(taskFont);
 
-        layout->insertWidget(layout->count()-1, taskLbl);
+        layout->insertRow(layout->count()-2, taskLbl);
         lineE->clear();
     }
 }

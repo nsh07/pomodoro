@@ -5,7 +5,7 @@
 
 #include <QLabel>
 #include <QTabWidget>
-#include <QVBoxLayout>
+#include <QFormLayout>
 #include <QLineEdit>
 #include <QScrollArea>
 #include <QFont>
@@ -23,18 +23,18 @@ class MainWindow : public QMainWindow
     
     public slots:
         void addTask();
-        void remTask(int index=2);
+        void remTask(int index=3);
         void subTime();
+        void resetTime();
     
     private:
         QScrollArea *scrAr;
         QWidget *base;
         QTabWidget *tabWid;
         QLabel *timeLbl;
-        QVBoxLayout *layout;
+        QFormLayout *layout;
 
         QPushButton *addBtn;
-        QHBoxLayout *newTaskLayout;
         QLineEdit *lineE;
         
         int time;
