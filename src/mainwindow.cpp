@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     newTaskLayout = new QHBoxLayout; // Layout that holds the new task line edit and button
     lineE = new QLineEdit;
     timer = new CustomTimer;
-    QPushButton *playBtn = new QPushButton(QIcon("../icons/media-playback-start-symbolic.svg"), "Start");
+    QPushButton *playBtn = new QPushButton(QIcon(":/icons/media-playback-start-symbolic.svg"), "Start");
 
     // Setup and add widgets
     newTaskLayout->addWidget(lineE);
@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     base->  setMinimumHeight(50);
     layout->setSizeConstraint(QLayout::SetMinimumSize);
 
-    tabWid->addTab(scrAr, QIcon("../icons/preferences-system-time-symbolic.svg"), "Tasks");
+    tabWid->addTab(scrAr, QIcon(":/icons/preferences-system-time-symbolic.svg"), "Tasks");
     tabWid->setMinimumSize(500, 400);
 
     layout->addLayout(newTaskLayout);

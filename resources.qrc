@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/media-playback-start-symbolic.svg</file>
+        <file>icons/preferences-system-time-symbolic.svg</file>
+    </qresource>
+</RCC>
