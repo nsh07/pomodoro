@@ -26,9 +26,13 @@ class MainWindow : public QMainWindow
         void remTask(int index=3);
         void remTask(QLabel *lbl);
         void subTime();
+        void subBreakTime();
         void resetTime();
     
     private:
+        void startBreak();
+        void endBreak();
+
         QScrollArea *scrAr;
         QWidget *base;
         QTabWidget *tabWid;
@@ -40,6 +44,8 @@ class MainWindow : public QMainWindow
         QString iconSuffix;
         
         int time;
+        int breakTime;
+        QLabel *breakTimeLbl;
         CustomTimer *timer;
         QFont timerFont;
         QFont taskFont;

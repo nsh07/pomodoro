@@ -1,16 +1,18 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/media-playback-start-symbolic.svg</file>
-        <file>icons/media-playback-start-symbolic-light.svg</file>
-        <file>icons/media-playback-stop-symbolic.svg</file>
-        <file>icons/media-playback-stop-symbolic-light.svg</file>
-        <file>icons/preferences-system-time-symbolic.svg</file>
-        <file>icons/preferences-system-time-symbolic-light.svg</file>
-        <file>icons/system-restart-symbolic.svg</file>
-        <file>icons/system-restart-symbolic-light.svg</file>
-        <file>icons/list-add-symbolic.svg</file>
-        <file>icons/list-add-symbolic-light.svg</file>
-        <file>icons/edit-delete-symbolic.svg</file>
-        <file>icons/edit-delete-symbolic-light.svg</file>
+        <file>icons/play_arrow.svg</file>
+        <file>icons/play_arrow-light.svg</file>
+        <file>icons/pause.svg</file>
+        <file>icons/pause-light.svg</file>
+        <file>icons/pending_actions.svg</file>
+        <file>icons/pending_actions-light.svg</file>
+        <file>icons/restart_alt.svg</file>
+        <file>icons/restart_alt-light.svg</file>
+        <file>icons/add_task.svg</file>
+        <file>icons/add_task-light.svg</file>
+        <file>icons/delete.svg</file>
+        <file>icons/delete-light.svg</file>
+        <file>icons/local_cafe.svg</file>
+        <file>icons/local_cafe-light.svg</file>
     </qresource>
 </RCC>
