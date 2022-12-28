@@ -7,25 +7,26 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     // Initialize all variables/pointers
-    base      = new QWidget;
-    scrAr     = new QScrollArea;
-    layout    = new QFormLayout(base); // Base layout
-    tabWid    = new QTabWidget(this);
-    timeLbl   = new QLabel;
-    timerFont = QFont("sans-serif", 100);
-    taskFont  = QFont("sans-serif", 18);
-    lineE     = new QLineEdit;
-    timer     = new CustomTimer;
+    base         = new QWidget;
+    scrAr        = new QScrollArea;
+    layout       = new QFormLayout(base); // Base layout
+    tabWid       = new QTabWidget(this);
+    timeLbl      = new QLabel;
+    breakTimeLbl = new QLabel;
+    timerFont    = QFont("sans-serif", 100);
+    taskFont     = QFont("sans-serif", 18);
+    lineE        = new QLineEdit;
+    timer        = new CustomTimer;
 
     int textHSV = timeLbl->palette().color(QPalette::WindowText).value();
     int bgHSV = timeLbl->palette().color(QPalette::Window).value();
     iconSuffix = "";
     if (textHSV > bgHSV) iconSuffix = "-light";
 
-    addBtn    = new QPushButton(QIcon(":/icons/list-add-symbolic" + iconSuffix + ".svg"), "");
-    QPushButton *startBtn = new QPushButton(QIcon(":/icons/media-playback-start-symbolic" + iconSuffix + ".svg"), "Start");
-    QPushButton *stopBtn  = new QPushButton(QIcon(":/icons/media-playback-stop-symbolic" + iconSuffix + ".svg"), "Stop");
-    QPushButton *resetBtn = new QPushButton(QIcon(":/icons/system-restart-symbolic" + iconSuffix + ".svg"), "Reset");
+    addBtn = new QPushButton(QIcon(":/icons/add_task" + iconSuffix + ".svg"), "");
+    QPushButton *startBtn = new QPushButton(QIcon(":/icons/play_arrow" + iconSuffix + ".svg"), "Start");
+    QPushButton *stopBtn  = new QPushButton(QIcon(":/icons/pause" + iconSuffix + ".svg"), "Stop");
+    QPushButton *resetBtn = new QPushButton(QIcon(":/icons/restart_alt" + iconSuffix + ".svg"), "Reset");
     QHBoxLayout *stopResetLayout = new QHBoxLayout;
 
     // Setup and add widgets
@@ -34,9 +35,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     lineE  ->setPlaceholderText("What to do next?");
     time = 1500;
+    breakTime = 300;
     timeLbl->setText("25:00");
+    breakTimeLbl->setText("5:00");
     timeLbl->setFont(timerFont);
+    breakTimeLbl->setFont(timerFont);
     timeLbl->setAlignment(Qt::AlignCenter);
+    breakTimeLbl->setAlignment(Qt::AlignCenter);
 
     base  ->setLayout(layout);
     scrAr ->setWidget(base);
@@ -47,7 +52,8 @@ MainWindow::MainWindow(QWidget *parent)
     base  ->setMinimumHeight(50);
     layout->setSizeConstraint(QLayout::SetMinimumSize);
 
-    tabWid->addTab(scrAr, QIcon(":/icons/preferences-system-time-symbolic" + iconSuffix + ".svg"), "Tasks");
+    tabWid->addTab(scrAr, QIcon(":/icons/pending_actions" + iconSuffix + ".svg"), "Tasks");
+    tabWid->addTab(breakTimeLbl, QIcon(":/icons/local_cafe" + iconSuffix + ".svg"), "Break");
     tabWid->setMinimumSize(640, 480);
 
     // Connections
@@ -72,10 +78,10 @@ void MainWindow::subTime()
     Time step logic
     If the current time is not zero, reduce it by 1 second
     else, remove the topmost task from the task list if the number of
-    widgets in layout is not 3 (i.e. there is at least 1 task), else
+    widgets in layout is not 4 (i.e. there is at least 1 task), else
     stop the timer
     */
-    if (time != 0) time--;
+    if (time > 0) time--;
     else {
         if (layout->rowCount() == 4) {
             time = 1500;
@@ -85,15 +91,23 @@ void MainWindow::subTime()
             remTask();
             time = 1500;
             if (layout->rowCount() == 4) timer->stop();
+            else startBreak();
         }
     }
     timeLbl->setText(QString::number(time / 60) + ':' + QString::number(time % 60));
 }
 
+void MainWindow::subBreakTime()
+{
+    if (breakTime != 0) breakTime--;
+    else endBreak();
+    breakTimeLbl->setText(QString::number(breakTime / 60) + ':' + QString::number(breakTime % 60));
+}
+
 void MainWindow::resetTime()
 {
     time = 1500;
-    timeLbl->setText("25:00");
+    timeLbl->setText(QString::number(time / 60) + ':' + QString::number(time % 60));
 }
 
 void MainWindow::addTask()
@@ -105,7 +119,7 @@ void MainWindow::addTask()
     */
     if (!(lineE->text().isEmpty())) {
         QLabel *taskLbl = new QLabel;
-        QPushButton *remBtn = new QPushButton(QIcon(":/icons/edit-delete-symbolic" + iconSuffix + ".svg"), "");
+        QPushButton *remBtn = new QPushButton(QIcon(":/icons/delete" + iconSuffix + ".svg"), "");
         taskLbl->setText(lineE->text());
         taskLbl->setFont(taskFont);
         connect(remBtn, &QPushButton::clicked, this, [this, taskLbl]{ remTask(taskLbl); });
@@ -130,4 +144,25 @@ void MainWindow::remTask(QLabel *lbl)
     int i;
     layout->getWidgetPosition(lbl, &i, nullptr);
     layout->removeRow(i);
+}
+
+void MainWindow::startBreak()
+{
+    /*
+    Connect timer to subBreakTime and switch to break tab
+    */
+    disconnect(timer, &QTimer::timeout, this, &MainWindow::subTime);
+    tabWid->setCurrentIndex(1);
+    connect(timer, &QTimer::timeout, this, &MainWindow::subBreakTime);
+}
+
+void MainWindow::endBreak()
+{
+    /*
+    Reset break time, connect timer to subTime and switch to tasks tab
+    */
+    breakTime = 300;
+    disconnect(timer, &QTimer::timeout, this, &MainWindow::subBreakTime);
+    tabWid->setCurrentIndex(0);
+    connect(timer, &QTimer::timeout, this, &MainWindow::subTime);
 }
