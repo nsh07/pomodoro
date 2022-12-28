@@ -34,8 +34,8 @@ MainWindow::MainWindow(QWidget *parent)
     stopResetLayout->addWidget(resetBtn);
 
     lineE  ->setPlaceholderText("What to do next?");
-    time = 15;
-    breakTime = 3;
+    time = 1500;
+    breakTime = 300;
     timeLbl->setText("25:00");
     breakTimeLbl->setText("5:00");
     timeLbl->setFont(timerFont);
@@ -78,18 +78,18 @@ void MainWindow::subTime()
     Time step logic
     If the current time is not zero, reduce it by 1 second
     else, remove the topmost task from the task list if the number of
-    widgets in layout is not 3 (i.e. there is at least 1 task), else
+    widgets in layout is not 4 (i.e. there is at least 1 task), else
     stop the timer
     */
     if (time > 0) time--;
     else {
         if (layout->rowCount() == 4) {
-            time = 15;
+            time = 1500;
             timer->stop();
         }
         else {
             remTask();
-            time = 15;
+            time = 1500;
             if (layout->rowCount() == 4) timer->stop();
             else startBreak();
         }
@@ -106,7 +106,7 @@ void MainWindow::subBreakTime()
 
 void MainWindow::resetTime()
 {
-    time = 15;
+    time = 1500;
     timeLbl->setText(QString::number(time / 60) + ':' + QString::number(time % 60));
 }
 
@@ -161,7 +161,7 @@ void MainWindow::endBreak()
     /*
     Reset break time, connect timer to subTime and switch to tasks tab
     */
-    breakTime = 3;
+    breakTime = 300;
     disconnect(timer, &QTimer::timeout, this, &MainWindow::subBreakTime);
     tabWid->setCurrentIndex(0);
     connect(timer, &QTimer::timeout, this, &MainWindow::subTime);
